@@ -1,0 +1,245 @@
+{
+  "description": "اختبارات المدفوعات",
+  "base_url": "http://localhost:3000",
+  "payment_methods": ["stripe", "paypal", "cash"],
+  "endpoints": {
+    "create_payment": {
+      "name": "إنشاء دفع",
+      "method": "POST",
+      "url": "/payments",
+      "authentication": "required",
+      "role": "CUSTOMER",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "subscriptionId": 1,
+        "amount": 150.0,
+        "currency": "SAR",
+        "paymentMethod": "cash"
+      },
+      "expected_response": {
+        "id": 1,
+        "subscriptionId": 1,
+        "amount": 150.0,
+        "status": "PENDING",
+        "paymentId": "PAY_123456789"
+      },
+      "notes": "إنشاء سجل دفع"
+    },
+    "process_stripe_payment": {
+      "name": "معالجة دفع Stripe",
+      "method": "POST",
+      "url": "/payments/stripe",
+      "authentication": "required",
+      "role": "CUSTOMER",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "subscriptionId": 1,
+        "amount": 150.0,
+        "paymentMethodId": "pm_card_visa"
+      },
+      "expected_response": {
+        "payment": {
+          "id": 1,
+          "status": "COMPLETED",
+          "transactionId": "ch_123456789"
+        },
+        "message": "Payment processed successfully"
+      },
+      "notes": "يحتاج إعداد Stripe API keys"
+    },
+    "process_paypal_payment": {
+      "name": "معالجة دفع PayPal",
+      "method": "POST",
+      "url": "/payments/paypal",
+      "authentication": "required",
+      "role": "CUSTOMER",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "subscriptionId": 1,
+        "amount": 150.0,
+        "returnUrl": "http://localhost:3000/payment/success",
+        "cancelUrl": "http://localhost:3000/payment/cancel"
+      },
+      "expected_response": {
+        "paypalPaymentId": "PAYID-123456789",
+        "approvalUrl": "https://www.sandbox.paypal.com/checkoutnow?token=...",
+        "message": "Redirect user to approval URL"
+      },
+      "notes": "يحتاج إعداد PayPal API keys"
+    },
+    "get_all_payments": {
+      "name": "عرض جميع المدفوعات",
+      "method": "GET",
+      "url": "/payments",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "query_params": {
+        "customerId": "optional",
+        "status": "optional: PENDING/COMPLETED/FAILED/REFUNDED"
+      },
+      "expected_response": {
+        "payments": []
+      },
+      "notes": "فلترة حسب العميل أو الحالة"
+    },
+    "get_my_payments": {
+      "name": "عرض مدفوعاتي",
+      "method": "GET",
+      "url": "/payments/my-payments",
+      "authentication": "required",
+      "role": "CUSTOMER",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "payments": [
+          {
+            "id": 1,
+            "amount": 150.0,
+            "status": "COMPLETED",
+            "paymentMethod": "stripe",
+            "createdAt": "2024-01-01T10:00:00.000Z"
+          }
+        ]
+      },
+      "notes": "مدفوعات العميل الحالي"
+    },
+    "get_payment_statistics": {
+      "name": "إحصائيات المدفوعات",
+      "method": "GET",
+      "url": "/payments/statistics",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "query_params": {
+        "customerId": "optional",
+        "salonId": "optional"
+      },
+      "expected_response": {
+        "totalPayments": 100,
+        "totalRevenue": 15000.0,
+        "completedPayments": 95,
+        "pendingPayments": 3,
+        "failedPayments": 2
+      },
+      "notes": "إحصائيات شاملة"
+    },
+    "get_recent_payments": {
+      "name": "المدفوعات الأخيرة",
+      "method": "GET",
+      "url": "/payments/recent",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "query_params": {
+        "limit": 10,
+        "customerId": "optional"
+      },
+      "expected_response": {
+        "payments": []
+      },
+      "notes": "آخر المدفوعات"
+    },
+    "get_payment_by_id": {
+      "name": "تفاصيل دفع محدد",
+      "method": "GET",
+      "url": "/payments/1",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 1,
+        "subscription": {
+          "package": {
+            "name": "Premium Package"
+          }
+        },
+        "amount": 150.0,
+        "status": "COMPLETED",
+        "paymentMethod": "stripe",
+        "transactionId": "ch_123456789"
+      },
+      "notes": "تفاصيل كاملة للدفع"
+    },
+    "refund_payment": {
+      "name": "استرداد مبلغ",
+      "method": "POST",
+      "url": "/payments/1/refund",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "amount": 150.0,
+        "reason": "طلب العميل"
+      },
+      "expected_response": {
+        "payment": {
+          "id": 1,
+          "status": "REFUNDED",
+          "refundAmount": 150.0,
+          "refundDate": "2024-01-15T10:00:00.000Z"
+        },
+        "message": "Refund processed successfully"
+      },
+      "notes": "Admin فقط - استرداد كامل أو جزئي"
+    }
+  },
+  "test_scenarios": {
+    "scenario_1": {
+      "name": "دفع ناجح",
+      "steps": [
+        "1. create_subscription",
+        "2. process_stripe_payment",
+        "3. get_payment_by_id للتحقق",
+        "4. get_my_payments لعرض السجل"
+      ]
+    },
+    "scenario_2": {
+      "name": "استرداد مبلغ",
+      "steps": [
+        "1. get_payment_by_id",
+        "2. refund_payment (Admin)",
+        "3. get_payment_by_id للتحقق من الاسترداد"
+      ]
+    }
+  },
+  "error_cases": {
+    "payment_failed": {
+      "name": "فشل الدفع",
+      "endpoint": "process_stripe_payment",
+      "body": {
+        "paymentMethodId": "pm_card_chargeDeclined"
+      },
+      "expected_error": {
+        "statusCode": 400,
+        "message": "Payment declined"
+      }
+    }
+  }
+}

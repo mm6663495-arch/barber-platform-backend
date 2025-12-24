@@ -1,0 +1,260 @@
+{
+  "description": "اختبارات إدارة المستخدمين (Admin فقط)",
+  "base_url": "http://localhost:3000",
+  "required_role": "ADMIN",
+  "endpoints": {
+    "get_all_users": {
+      "name": "عرض جميع المستخدمين",
+      "method": "GET",
+      "url": "/users",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "query_params": {
+        "page": 1,
+        "limit": 10,
+        "role": "optional: ADMIN/SALON_OWNER/CUSTOMER"
+      },
+      "expected_response": {
+        "users": [
+          {
+            "id": 1,
+            "email": "admin@barber.com",
+            "role": "ADMIN",
+            "isActive": true,
+            "createdAt": "2024-01-01T10:00:00.000Z"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 3,
+          "pages": 1
+        }
+      },
+      "notes": "يمكن فلترة المستخدمين حسب الدور"
+    },
+    "get_users_by_role": {
+      "name": "عرض المستخدمين حسب الدور",
+      "method": "GET",
+      "url": "/users?role=CUSTOMER",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "users": [],
+        "pagination": {}
+      },
+      "notes": "استخدم role=ADMIN أو SALON_OWNER أو CUSTOMER"
+    },
+    "get_user_statistics": {
+      "name": "عرض إحصائيات المستخدمين",
+      "method": "GET",
+      "url": "/users/statistics",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "totalUsers": 3,
+        "totalAdmins": 1,
+        "totalSalonOwners": 1,
+        "totalCustomers": 1,
+        "activeUsers": 3,
+        "inactiveUsers": 0
+      },
+      "notes": "إحصائيات شاملة عن جميع المستخدمين"
+    },
+    "get_recent_users": {
+      "name": "عرض المستخدمين الجدد",
+      "method": "GET",
+      "url": "/users/recent",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "query_params": {
+        "limit": 10
+      },
+      "expected_response": {
+        "users": [],
+        "total": 0
+      },
+      "notes": "آخر المستخدمين المسجلين"
+    },
+    "get_user_by_id": {
+      "name": "عرض مستخدم محدد",
+      "method": "GET",
+      "url": "/users/1",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 1,
+        "email": "admin@barber.com",
+        "role": "ADMIN",
+        "isActive": true,
+        "profile": {}
+      },
+      "notes": "استبدل 1 بمعرف المستخدم المطلوب"
+    },
+    "create_user": {
+      "name": "إنشاء مستخدم جديد",
+      "method": "POST",
+      "url": "/users",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "email": "newuser@test.com",
+        "password": "password123",
+        "role": "CUSTOMER",
+        "fullName": "مستخدم جديد",
+        "phone": "+966503333333"
+      },
+      "expected_response": {
+        "user": {
+          "id": 6,
+          "email": "newuser@test.com",
+          "role": "CUSTOMER"
+        },
+        "message": "User created successfully"
+      },
+      "notes": "Admin فقط يمكنه إنشاء مستخدمين"
+    },
+    "update_user": {
+      "name": "تحديث معلومات مستخدم",
+      "method": "PATCH",
+      "url": "/users/3",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "fullName": "اسم محدث",
+        "phone": "+966504444444"
+      },
+      "expected_response": {
+        "id": 3,
+        "email": "customer@test.com",
+        "profile": {
+          "fullName": "اسم محدث",
+          "phone": "+966504444444"
+        }
+      },
+      "notes": "يمكن تحديث الاسم والهاتف فقط"
+    },
+    "deactivate_user": {
+      "name": "تعطيل مستخدم",
+      "method": "PATCH",
+      "url": "/users/3/deactivate",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "message": "User deactivated successfully",
+        "user": {
+          "id": 3,
+          "isActive": false
+        }
+      },
+      "notes": "Admin فقط يمكنه تعطيل المستخدمين"
+    },
+    "activate_user": {
+      "name": "تفعيل مستخدم",
+      "method": "PATCH",
+      "url": "/users/3/activate",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "message": "User activated successfully",
+        "user": {
+          "id": 3,
+          "isActive": true
+        }
+      },
+      "notes": "Admin فقط يمكنه تفعيل المستخدمين"
+    }
+  },
+  "test_scenarios": {
+    "scenario_1": {
+      "name": "إدارة مستخدم كاملة",
+      "steps": [
+        "1. استخدم get_all_users لعرض المستخدمين",
+        "2. استخدم create_user لإضافة مستخدم جديد",
+        "3. استخدم get_user_by_id للتحقق من البيانات",
+        "4. استخدم update_user لتحديث البيانات",
+        "5. استخدم deactivate_user لتعطيل المستخدم"
+      ]
+    },
+    "scenario_2": {
+      "name": "فلترة وإحصائيات",
+      "steps": [
+        "1. استخدم get_user_statistics لعرض الإحصائيات",
+        "2. استخدم get_users_by_role لعرض العملاء",
+        "3. استخدم get_recent_users لآخر المسجلين"
+      ]
+    }
+  },
+  "error_cases": {
+    "unauthorized_access": {
+      "name": "محاولة الوصول بدون صلاحيات Admin",
+      "endpoint": "get_all_users",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}"
+      },
+      "expected_error": {
+        "statusCode": 403,
+        "message": "Insufficient permissions"
+      }
+    },
+    "user_not_found": {
+      "name": "مستخدم غير موجود",
+      "endpoint": "get_user_by_id",
+      "url": "/users/9999",
+      "expected_error": {
+        "statusCode": 404,
+        "message": "User not found"
+      }
+    },
+    "invalid_role": {
+      "name": "دور غير صحيح",
+      "endpoint": "create_user",
+      "body": {
+        "email": "test@test.com",
+        "password": "password123",
+        "role": "INVALID_ROLE",
+        "fullName": "Test"
+      },
+      "expected_error": {
+        "statusCode": 400,
+        "message": "Validation failed"
+      }
+    }
+  }
+}

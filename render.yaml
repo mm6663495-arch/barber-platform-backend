@@ -1,0 +1,70 @@
+services:
+  # Web Service للباك اند
+  - type: web
+    name: barber-platform-backend
+    env: node
+    region: frankfurt  # يمكنك تغييره حسب موقعك
+    plan: free  # أو starter/standard للميزات الإضافية
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npx prisma migrate deploy && npm run start:prod
+    healthCheckPath: /health
+    envVars:
+      # Database - سيتم إضافتها يدوياً من Render Dashboard
+      # DATABASE_URL: ${DATABASE_URL}  # من Render PostgreSQL service
+      
+      # Server
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      
+      # JWT - يجب تغييرها بقيم آمنة
+      - key: JWT_SECRET
+        generateValue: true  # Render سيولد قيمة عشوائية
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      
+      # Email (اختياري - أضف قيمك)
+      # - key: SMTP_HOST
+      #   value: smtp.gmail.com
+      # - key: SMTP_PORT
+      #   value: 587
+      # - key: SMTP_USER
+      #   value: your-email@gmail.com
+      # - key: SMTP_PASS
+      #   sync: false  # أضفها يدوياً من Dashboard
+      
+      # Stripe (اختياري)
+      # - key: STRIPE_SECRET_KEY
+      #   sync: false
+      # - key: STRIPE_PUBLISHABLE_KEY
+      #   sync: false
+      
+      # PayPal (اختياري)
+      # - key: PAYPAL_CLIENT_ID
+      #   sync: false
+      # - key: PAYPAL_CLIENT_SECRET
+      #   sync: false
+      # - key: PAYPAL_MODE
+      #   value: live
+      
+      # Firebase (اختياري)
+      # - key: FIREBASE_PROJECT_ID
+      #   sync: false
+      # - key: FIREBASE_PRIVATE_KEY
+      #   sync: false
+      # - key: FIREBASE_CLIENT_EMAIL
+      #   sync: false
+      
+      # Google Maps (اختياري)
+      # - key: GOOGLE_MAPS_API_KEY
+      #   sync: false
+
+databases:
+  # قاعدة بيانات PostgreSQL
+  - name: barber-platform-db
+    databaseName: barber_platform
+    user: barber_user
+    plan: free  # أو starter للميزات الإضافية
+    region: frankfurt
+

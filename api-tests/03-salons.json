@@ -1,0 +1,319 @@
+{
+  "description": "اختبارات الصالونات والباقات",
+  "base_url": "http://localhost:3000",
+  "endpoints": {
+    "get_all_salons": {
+      "name": "عرض جميع الصالونات (عام)",
+      "method": "GET",
+      "url": "/salons",
+      "authentication": "none",
+      "role": "ANY",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "query_params": {
+        "page": 1,
+        "limit": 10,
+        "search": "optional: search term",
+        "minRating": "optional: 4.0",
+        "location": "optional: الرياض"
+      },
+      "expected_response": {
+        "salons": [
+          {
+            "id": 2,
+            "name": "Elite Barber Shop",
+            "description": "Professional barber services",
+            "address": "Riyadh, Saudi Arabia",
+            "rating": 4.5,
+            "totalReviews": 10,
+            "isActive": true,
+            "isApproved": true
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 1,
+          "pages": 1
+        }
+      },
+      "notes": "لا يحتاج مصادقة - متاح للجميع"
+    },
+    "get_popular_salons": {
+      "name": "عرض الصالونات الشائعة",
+      "method": "GET",
+      "url": "/salons/popular",
+      "authentication": "none",
+      "role": "ANY",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "query_params": {
+        "limit": 10
+      },
+      "expected_response": {
+        "salons": []
+      },
+      "notes": "الصالونات حسب التقييم والشعبية"
+    },
+    "get_salon_by_id": {
+      "name": "عرض تفاصيل صالون محدد",
+      "method": "GET",
+      "url": "/salons/2",
+      "authentication": "none",
+      "role": "ANY",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 2,
+        "name": "Elite Barber Shop",
+        "description": "Professional barber services",
+        "address": "Riyadh, Saudi Arabia",
+        "latitude": 24.7136,
+        "longitude": 46.6753,
+        "workingHours": {
+          "sunday": "09:00-22:00",
+          "monday": "09:00-22:00"
+        },
+        "rating": 4.5,
+        "totalReviews": 10,
+        "owner": {
+          "id": 1,
+          "fullName": "Ahmed Al-Salem"
+        },
+        "packages": []
+      },
+      "notes": "استبدل 2 بمعرف الصالون"
+    },
+    "get_salon_packages": {
+      "name": "عرض باقات صالون",
+      "method": "GET",
+      "url": "/salons/2/packages",
+      "authentication": "none",
+      "role": "ANY",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "packages": [
+          {
+            "id": 1,
+            "name": "Premium Package",
+            "description": "Full service package",
+            "price": 150.0,
+            "visitsCount": 3,
+            "validityDays": 30,
+            "isPublished": true
+          }
+        ]
+      },
+      "notes": "الباقات المتاحة للصالون"
+    },
+    "create_salon": {
+      "name": "إنشاء صالون جديد",
+      "method": "POST",
+      "url": "/salons",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "name": "صالون الجمال الملكي",
+        "description": "صالون متخصص في قص وتصفيف الشعر",
+        "address": "شارع الملك فهد، حي العليا، الرياض 12345",
+        "latitude": 24.7136,
+        "longitude": 46.6753,
+        "workingHours": {
+          "sunday": "09:00-22:00",
+          "monday": "09:00-22:00",
+          "tuesday": "09:00-22:00",
+          "wednesday": "09:00-22:00",
+          "thursday": "09:00-22:00",
+          "friday": "14:00-22:00",
+          "saturday": "09:00-22:00"
+        },
+        "images": [
+          "https://example.com/salon1.jpg",
+          "https://example.com/salon2.jpg"
+        ]
+      },
+      "expected_response": {
+        "id": 3,
+        "name": "صالون الجمال الملكي",
+        "isActive": true,
+        "isApproved": false,
+        "message": "Salon created successfully. Waiting for admin approval."
+      },
+      "notes": "يحتاج موافقة Admin قبل النشر"
+    },
+    "get_my_salons": {
+      "name": "عرض صالوناتي",
+      "method": "GET",
+      "url": "/salons/owner/my-salons",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "salons": []
+      },
+      "notes": "الصالونات الخاصة بصاحب الصالون الحالي"
+    },
+    "get_my_salon_statistics": {
+      "name": "عرض إحصائيات صالوناتي",
+      "method": "GET",
+      "url": "/salons/owner/statistics",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "totalSalons": 1,
+        "activeSalons": 1,
+        "totalPackages": 2,
+        "totalSubscriptions": 5,
+        "totalRevenue": 1500.0,
+        "averageRating": 4.5
+      },
+      "notes": "إحصائيات شاملة لصالونات المالك"
+    },
+    "update_salon": {
+      "name": "تحديث معلومات صالون",
+      "method": "PATCH",
+      "url": "/salons/2",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "name": "Elite Barber Shop - Updated",
+        "description": "Updated description",
+        "workingHours": {
+          "sunday": "08:00-23:00"
+        }
+      },
+      "expected_response": {
+        "id": 2,
+        "name": "Elite Barber Shop - Updated",
+        "message": "Salon updated successfully"
+      },
+      "notes": "يمكن تحديث صالونك فقط"
+    },
+    "delete_salon": {
+      "name": "حذف صالون",
+      "method": "DELETE",
+      "url": "/salons/2",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "message": "Salon deleted successfully"
+      },
+      "notes": "حذف دائم - يمكن حذف صالونك فقط"
+    },
+    "approve_salon": {
+      "name": "الموافقة على صالون",
+      "method": "PATCH",
+      "url": "/salons/3/approve",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 3,
+        "isApproved": true,
+        "message": "Salon approved successfully"
+      },
+      "notes": "Admin فقط - يجعل الصالون مرئياً للعامة"
+    },
+    "reject_salon": {
+      "name": "رفض صالون",
+      "method": "PATCH",
+      "url": "/salons/3/reject",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 3,
+        "isApproved": false,
+        "message": "Salon rejected"
+      },
+      "notes": "Admin فقط - يرفض الصالون"
+    }
+  },
+  "test_scenarios": {
+    "scenario_1": {
+      "name": "دورة حياة صالون كاملة",
+      "steps": [
+        "1. استخدم create_salon لإنشاء صالون جديد (Salon Owner)",
+        "2. استخدم get_my_salons للتحقق من الإنشاء",
+        "3. استخدم approve_salon للموافقة (Admin)",
+        "4. استخدم get_all_salons للتحقق من الظهور",
+        "5. استخدم update_salon لتحديث المعلومات"
+      ]
+    },
+    "scenario_2": {
+      "name": "بحث وفلترة الصالونات",
+      "steps": [
+        "1. استخدم get_all_salons للعرض العام",
+        "2. استخدم get_all_salons?search=Elite للبحث",
+        "3. استخدم get_all_salons?minRating=4.0 للفلترة",
+        "4. استخدم get_popular_salons للصالونات الشائعة"
+      ]
+    }
+  },
+  "error_cases": {
+    "unauthorized_create": {
+      "name": "محاولة إنشاء صالون بدون صلاحيات",
+      "endpoint": "create_salon",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}"
+      },
+      "expected_error": {
+        "statusCode": 403,
+        "message": "Insufficient permissions"
+      }
+    },
+    "salon_not_found": {
+      "name": "صالون غير موجود",
+      "endpoint": "get_salon_by_id",
+      "url": "/salons/9999",
+      "expected_error": {
+        "statusCode": 404,
+        "message": "Salon not found"
+      }
+    },
+    "invalid_coordinates": {
+      "name": "إحداثيات غير صحيحة",
+      "endpoint": "create_salon",
+      "body": {
+        "name": "Test Salon",
+        "address": "Test Address",
+        "latitude": "invalid",
+        "longitude": 46.6753
+      },
+      "expected_error": {
+        "statusCode": 400,
+        "message": "Validation failed"
+      }
+    }
+  }
+}

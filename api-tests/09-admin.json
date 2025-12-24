@@ -1,0 +1,143 @@
+{
+  "description": "اختبارات لوحة الإدارة (Admin فقط)",
+  "base_url": "http://localhost:3000",
+  "required_role": "ADMIN",
+  "endpoints": {
+    "get_dashboard": {
+      "name": "لوحة التحكم الرئيسية",
+      "method": "GET",
+      "url": "/admin/dashboard",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "users": {
+          "total": 100,
+          "active": 95,
+          "newThisMonth": 15
+        },
+        "salons": {
+          "total": 50,
+          "approved": 45,
+          "pending": 5
+        },
+        "subscriptions": {
+          "total": 200,
+          "active": 180,
+          "revenue": 30000.0
+        },
+        "reviews": {
+          "total": 500,
+          "averageRating": 4.5
+        }
+      },
+      "notes": "نظرة عامة على النظام"
+    },
+    "get_recent_activity": {
+      "name": "النشاط الأخير",
+      "method": "GET",
+      "url": "/admin/recent-activity",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "activities": [
+          {
+            "type": "user_registration",
+            "description": "مستخدم جديد: customer@test.com",
+            "timestamp": "2024-01-15T10:00:00.000Z"
+          }
+        ]
+      },
+      "notes": "آخر الأنشطة في النظام"
+    },
+    "get_pending_approvals": {
+      "name": "الموافقات المعلقة",
+      "method": "GET",
+      "url": "/admin/pending-approvals",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "pendingSalons": 5,
+        "pendingReports": 2,
+        "salons": [],
+        "reports": []
+      },
+      "notes": "العناصر التي تحتاج موافقة Admin"
+    },
+    "get_revenue_analytics": {
+      "name": "تحليلات الإيرادات",
+      "method": "GET",
+      "url": "/admin/revenue",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "totalRevenue": 50000.0,
+        "thisMonth": 5000.0,
+        "lastMonth": 4500.0,
+        "growth": "11.1%",
+        "byPaymentMethod": {
+          "stripe": 30000.0,
+          "paypal": 15000.0,
+          "cash": 5000.0
+        }
+      },
+      "notes": "تحليلات مالية شاملة"
+    },
+    "get_user_analytics": {
+      "name": "تحليلات المستخدمين",
+      "method": "GET",
+      "url": "/admin/users/analytics",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "totalUsers": 100,
+        "usersByRole": {
+          "ADMIN": 5,
+          "SALON_OWNER": 20,
+          "CUSTOMER": 75
+        },
+        "growthRate": "15%",
+        "activeUsers": 95
+      },
+      "notes": "إحصائيات المستخدمين"
+    },
+    "get_system_health": {
+      "name": "فحص صحة النظام",
+      "method": "GET",
+      "url": "/admin/health",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "status": "healthy",
+        "database": "connected",
+        "memory": "512MB / 2GB",
+        "uptime": "5 days",
+        "errors": 0
+      },
+      "notes": "حالة النظام والأداء"
+    }
+  }
+}

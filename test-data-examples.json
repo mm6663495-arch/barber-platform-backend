@@ -1,0 +1,206 @@
+{
+  "authentication": {
+    "admin": {
+      "email": "admin@barber.com",
+      "password": "admin123"
+    },
+    "salon_owner": {
+      "email": "owner@salon.com", 
+      "password": "owner123"
+    },
+    "customer": {
+      "email": "customer@test.com",
+      "password": "customer123"
+    }
+  },
+  "salon_examples": {
+    "create_salon": {
+      "name": "صالون الجمال الملكي",
+      "description": "صالون متخصص في قص وتصفيف الشعر للرجال والنساء",
+      "address": "شارع الملك فهد، حي العليا، الرياض 12345",
+      "latitude": 24.7136,
+      "longitude": 46.6753,
+      "workingHours": {
+        "sunday": "09:00-22:00",
+        "monday": "09:00-22:00", 
+        "tuesday": "09:00-22:00",
+        "wednesday": "09:00-22:00",
+        "thursday": "09:00-22:00",
+        "friday": "14:00-22:00",
+        "saturday": "09:00-22:00"
+      },
+      "images": [
+        "https://example.com/salon1.jpg",
+        "https://example.com/salon2.jpg"
+      ]
+    },
+    "update_salon": {
+      "name": "صالون الجمال الملكي - فرع الرياض",
+      "description": "صالون محدث مع خدمات إضافية",
+      "workingHours": {
+        "sunday": "08:00-23:00",
+        "monday": "08:00-23:00",
+        "tuesday": "08:00-23:00", 
+        "wednesday": "08:00-23:00",
+        "thursday": "08:00-23:00",
+        "friday": "14:00-23:00",
+        "saturday": "08:00-23:00"
+      }
+    }
+  },
+  "package_examples": {
+    "basic_package": {
+      "name": "الباقة الأساسية",
+      "description": "تشمل قص الشعر وتصفيف بسيط",
+      "price": 75.0,
+      "visitsCount": 1,
+      "validityDays": 7
+    },
+    "premium_package": {
+      "name": "الباقة المميزة",
+      "description": "تشمل قص الشعر، تصفيف، وغسيل",
+      "price": 150.0,
+      "visitsCount": 3,
+      "validityDays": 30
+    },
+    "luxury_package": {
+      "name": "الباقة الفاخرة",
+      "description": "تشمل جميع الخدمات مع علاجات إضافية",
+      "price": 300.0,
+      "visitsCount": 5,
+      "validityDays": 60
+    }
+  },
+  "subscription_examples": {
+    "create_subscription": {
+      "packageId": 1,
+      "paymentMethod": "stripe"
+    },
+    "use_visit": {
+      "qrCode": "SUB_QR_123456789"
+    }
+  },
+  "review_examples": {
+    "excellent_review": {
+      "salonId": 1,
+      "visitId": 1,
+      "rating": 5,
+      "comment": "خدمة ممتازة! الموظفون محترفون والنتيجة رائعة. أنصح الجميع بهذا الصالون."
+    },
+    "good_review": {
+      "salonId": 1,
+      "visitId": 2,
+      "rating": 4,
+      "comment": "خدمة جيدة جداً، الأسعار مناسبة والموقع مريح."
+    },
+    "average_review": {
+      "salonId": 1,
+      "visitId": 3,
+      "rating": 3,
+      "comment": "الخدمة مقبولة، لكن يمكن تحسين وقت الانتظار."
+    },
+    "respond_to_review": {
+      "response": "شكراً لك على مراجعتك القيمة! نحن سعداء بخدمتك ونعمل على تحسين أوقات الانتظار."
+    }
+  },
+  "payment_examples": {
+    "stripe_payment": {
+      "subscriptionId": 1,
+      "amount": 150.0,
+      "paymentMethodId": "pm_card_visa"
+    },
+    "paypal_payment": {
+      "subscriptionId": 1,
+      "amount": 150.0,
+      "returnUrl": "http://localhost:3000/payment/success",
+      "cancelUrl": "http://localhost:3000/payment/cancel"
+    },
+    "refund_payment": {
+      "amount": 75.0,
+      "reason": "طلب العميل"
+    }
+  },
+  "user_examples": {
+    "create_customer": {
+      "email": "newcustomer@test.com",
+      "password": "password123",
+      "role": "CUSTOMER",
+      "fullName": "أحمد محمد",
+      "phone": "+966501234567"
+    },
+    "create_salon_owner": {
+      "email": "newsalonowner@test.com", 
+      "password": "password123",
+      "role": "SALON_OWNER",
+      "fullName": "سارة أحمد",
+      "phone": "+966507654321",
+      "subscriptionType": "MONTHLY"
+    },
+    "update_user": {
+      "fullName": "أحمد محمد المحدث",
+      "phone": "+966501234568"
+    }
+  },
+  "notification_examples": {
+    "subscription_notification": {
+      "title": "اشتراك جديد",
+      "message": "تم إنشاء اشتراك جديد للباقة المميزة",
+      "type": "SUBSCRIPTION"
+    },
+    "visit_notification": {
+      "title": "زيارة جديدة",
+      "message": "لديك زيارة مجدولة غداً في الساعة 2:00 م",
+      "type": "VISIT"
+    },
+    "payment_notification": {
+      "title": "دفع مكتمل",
+      "message": "تم استلام دفعتك بنجاح",
+      "type": "PAYMENT"
+    }
+  },
+  "query_examples": {
+    "paginated_salons": {
+      "page": 1,
+      "limit": 10,
+      "search": "صالون",
+      "minRating": 4.0,
+      "location": "الرياض"
+    },
+    "filtered_reviews": {
+      "salonId": 1,
+      "page": 1,
+      "limit": 5
+    },
+    "filtered_subscriptions": {
+      "status": "ACTIVE",
+      "customerId": 1
+    },
+    "filtered_payments": {
+      "status": "COMPLETED",
+      "customerId": 1
+    }
+  },
+  "test_scenarios": {
+    "complete_subscription_flow": [
+      "1. إنشاء صالون جديد",
+      "2. إنشاء باقة للصالون", 
+      "3. نشر الباقة",
+      "4. العميل يشترك في الباقة",
+      "5. معالجة الدفع",
+      "6. استخدام الزيارة في الصالون",
+      "7. كتابة مراجعة"
+    ],
+    "review_management_flow": [
+      "1. العميل يكتب مراجعة",
+      "2. صاحب الصالون يرد على المراجعة", 
+      "3. مستخدم آخر يبلغ عن المراجعة",
+      "4. المدير يراجع البلاغ ويحله"
+    ],
+    "payment_processing_flow": [
+      "1. إنشاء دفع جديد",
+      "2. معالجة الدفع عبر Stripe/PayPal",
+      "3. عرض تفاصيل الدفع",
+      "4. إجراء استرداد عند الحاجة"
+    ]
+  }
+}

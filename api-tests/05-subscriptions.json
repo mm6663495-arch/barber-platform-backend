@@ -1,0 +1,327 @@
+{
+  "description": "اختبارات الاشتراكات والزيارات",
+  "base_url": "http://localhost:3000",
+  "endpoints": {
+    "create_subscription": {
+      "name": "إنشاء اشتراك جديد",
+      "method": "POST",
+      "url": "/subscriptions",
+      "authentication": "required",
+      "role": "CUSTOMER",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "packageId": 1,
+        "paymentMethod": "cash",
+        "autoRenewal": false
+      },
+      "expected_response": {
+        "id": 1,
+        "customerId": 1,
+        "packageId": 1,
+        "qrCode": "SUB_123456789",
+        "visitsUsed": 0,
+        "visitsRemaining": 3,
+        "startDate": "2024-01-01T00:00:00.000Z",
+        "endDate": "2024-01-31T23:59:59.000Z",
+        "status": "ACTIVE",
+        "message": "Subscription created successfully"
+      },
+      "notes": "احفظ qrCode لاستخدامه في الزيارات"
+    },
+    "get_all_subscriptions": {
+      "name": "عرض جميع الاشتراكات",
+      "method": "GET",
+      "url": "/subscriptions",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "query_params": {
+        "customerId": "optional",
+        "salonId": "optional",
+        "status": "optional: ACTIVE/EXPIRED/CANCELLED"
+      },
+      "expected_response": {
+        "subscriptions": []
+      },
+      "notes": "يمكن فلترة حسب العميل أو الصالون أو الحالة"
+    },
+    "get_my_subscriptions": {
+      "name": "عرض اشتراكاتي",
+      "method": "GET",
+      "url": "/subscriptions/my-subscriptions",
+      "authentication": "required",
+      "role": "CUSTOMER",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}",
+        "Content-Type": "application/json"
+      },
+      "query_params": {
+        "status": "optional: ACTIVE/EXPIRED/CANCELLED"
+      },
+      "expected_response": {
+        "subscriptions": [
+          {
+            "id": 1,
+            "package": {
+              "name": "Premium Package",
+              "salon": {
+                "name": "Elite Barber Shop"
+              }
+            },
+            "qrCode": "SUB_123456789",
+            "visitsUsed": 1,
+            "visitsRemaining": 2,
+            "status": "ACTIVE"
+          }
+        ]
+      },
+      "notes": "اشتراكات العميل الحالي فقط"
+    },
+    "get_salon_subscriptions": {
+      "name": "عرض اشتراكات صالون",
+      "method": "GET",
+      "url": "/subscriptions/salon/2",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "query_params": {
+        "status": "optional: ACTIVE/EXPIRED/CANCELLED"
+      },
+      "expected_response": {
+        "subscriptions": []
+      },
+      "notes": "اشتراكات صالون محدد - استبدل 2 بمعرف صالونك"
+    },
+    "get_subscription_by_id": {
+      "name": "عرض تفاصيل اشتراك",
+      "method": "GET",
+      "url": "/subscriptions/1",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 1,
+        "customer": {
+          "fullName": "Mohammed Ali"
+        },
+        "package": {
+          "name": "Premium Package",
+          "salon": {
+            "name": "Elite Barber Shop"
+          }
+        },
+        "qrCode": "SUB_123456789",
+        "visitsUsed": 1,
+        "visitsRemaining": 2,
+        "startDate": "2024-01-01T00:00:00.000Z",
+        "endDate": "2024-01-31T23:59:59.000Z",
+        "status": "ACTIVE",
+        "visits": []
+      },
+      "notes": "تفاصيل كاملة مع الزيارات"
+    },
+    "get_subscription_by_qr": {
+      "name": "عرض اشتراك برمز QR",
+      "method": "GET",
+      "url": "/subscriptions/qr/SUB_123456789",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 1,
+        "qrCode": "SUB_123456789",
+        "customer": {
+          "fullName": "Mohammed Ali"
+        },
+        "package": {
+          "name": "Premium Package"
+        },
+        "visitsRemaining": 2,
+        "status": "ACTIVE"
+      },
+      "notes": "مفيد لمسح QR في الصالون"
+    },
+    "use_visit": {
+      "name": "استخدام زيارة",
+      "method": "POST",
+      "url": "/subscriptions/use-visit",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "qrCode": "SUB_123456789"
+      },
+      "expected_response": {
+        "visit": {
+          "id": 1,
+          "subscriptionId": 1,
+          "salonId": 2,
+          "visitDate": "2024-01-15T10:30:00.000Z"
+        },
+        "subscription": {
+          "visitsUsed": 2,
+          "visitsRemaining": 1
+        },
+        "message": "Visit recorded successfully"
+      },
+      "notes": "يسجل زيارة جديدة ويقلل الزيارات المتبقية"
+    },
+    "get_subscription_statistics": {
+      "name": "إحصائيات الاشتراكات",
+      "method": "GET",
+      "url": "/subscriptions/statistics",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "query_params": {
+        "customerId": "optional",
+        "salonId": "optional"
+      },
+      "expected_response": {
+        "total": 10,
+        "active": 7,
+        "expired": 2,
+        "cancelled": 1,
+        "totalRevenue": 1500.0,
+        "averageVisitsUsed": 2.5
+      },
+      "notes": "إحصائيات شاملة"
+    },
+    "cancel_subscription": {
+      "name": "إلغاء اشتراك",
+      "method": "PATCH",
+      "url": "/subscriptions/1/cancel",
+      "authentication": "required",
+      "role": "CUSTOMER",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 1,
+        "status": "CANCELLED",
+        "message": "Subscription cancelled successfully"
+      },
+      "notes": "العميل يمكنه إلغاء اشتراكه"
+    },
+    "renew_subscription": {
+      "name": "تجديد اشتراك",
+      "method": "PATCH",
+      "url": "/subscriptions/1/renew",
+      "authentication": "required",
+      "role": "CUSTOMER",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 2,
+        "status": "ACTIVE",
+        "message": "Subscription renewed successfully",
+        "newSubscription": {
+          "id": 2,
+          "startDate": "2024-02-01T00:00:00.000Z",
+          "endDate": "2024-03-01T23:59:59.000Z"
+        }
+      },
+      "notes": "ينشئ اشتراك جديد بنفس الباقة"
+    },
+    "check_expired_subscriptions": {
+      "name": "فحص الاشتراكات المنتهية",
+      "method": "POST",
+      "url": "/subscriptions/check-expired",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "expiredCount": 5,
+        "updatedSubscriptions": [],
+        "message": "Expired subscriptions updated"
+      },
+      "notes": "Admin فقط - يحدث حالة الاشتراكات المنتهية"
+    }
+  },
+  "subscription_lifecycle": {
+    "step_1": "إنشاء اشتراك (CUSTOMER)",
+    "step_2": "معالجة الدفع",
+    "step_3": "تفعيل الاشتراك (ACTIVE)",
+    "step_4": "استخدام الزيارات",
+    "step_5": "انتهاء الصلاحية (EXPIRED) أو الإلغاء (CANCELLED)",
+    "step_6": "التجديد (اختياري)"
+  },
+  "test_scenarios": {
+    "scenario_1": {
+      "name": "دورة اشتراك كاملة",
+      "steps": [
+        "1. create_subscription - إنشاء اشتراك جديد",
+        "2. get_subscription_by_qr - التحقق من QR",
+        "3. use_visit - استخدام زيارة (3 مرات)",
+        "4. cancel_subscription - إلغاء الاشتراك"
+      ]
+    },
+    "scenario_2": {
+      "name": "تجديد اشتراك",
+      "steps": [
+        "1. get_my_subscriptions - عرض الاشتراكات",
+        "2. renew_subscription - تجديد اشتراك منتهي",
+        "3. get_subscription_by_id - التحقق من التجديد"
+      ]
+    }
+  },
+  "error_cases": {
+    "invalid_package": {
+      "name": "باقة غير موجودة",
+      "endpoint": "create_subscription",
+      "body": {
+        "packageId": 9999
+      },
+      "expected_error": {
+        "statusCode": 404,
+        "message": "Package not found"
+      }
+    },
+    "expired_subscription": {
+      "name": "محاولة استخدام اشتراك منتهي",
+      "endpoint": "use_visit",
+      "body": {
+        "qrCode": "EXPIRED_QR"
+      },
+      "expected_error": {
+        "statusCode": 400,
+        "message": "Subscription has expired"
+      }
+    },
+    "no_visits_remaining": {
+      "name": "لا توجد زيارات متبقية",
+      "endpoint": "use_visit",
+      "expected_error": {
+        "statusCode": 400,
+        "message": "No visits remaining"
+      }
+    }
+  }
+}

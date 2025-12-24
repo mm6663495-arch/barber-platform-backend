@@ -1,0 +1,490 @@
+// This is your Prisma schema file for Barber Platform Backend
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums for better type safety
+enum UserRole {
+  ADMIN
+  SALON_OWNER
+  CUSTOMER
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  SUSPENDED
+}
+
+enum SubscriptionType {
+  MONTHLY
+  YEARLY
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum NotificationType {
+  SUBSCRIPTION
+  VISIT
+  REVIEW
+  GENERAL
+  PAYMENT
+  EXPIRY_WARNING
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  RESOLVED
+}
+
+enum ReportType {
+  INAPPROPRIATE_CONTENT
+  FAKE_REVIEW
+  SPAM
+  OTHER
+}
+
+// Permission Types for Admin RBAC
+enum PermissionType {
+  // Users Management
+  USERS_VIEW
+  USERS_CREATE
+  USERS_UPDATE
+  USERS_DELETE
+  USERS_ACTIVATE
+  USERS_DEACTIVATE
+
+  // Salons Management
+  SALONS_VIEW
+  SALONS_CREATE
+  SALONS_UPDATE
+  SALONS_DELETE
+  SALONS_APPROVE
+  SALONS_SUSPEND
+  SALONS_ACTIVATE
+
+  // Packages Management
+  PACKAGES_VIEW
+  PACKAGES_CREATE
+  PACKAGES_UPDATE
+  PACKAGES_DELETE
+
+  // Subscriptions Management
+  SUBSCRIPTIONS_VIEW
+  SUBSCRIPTIONS_UPDATE
+  SUBSCRIPTIONS_DELETE
+
+  // Reviews Management
+  REVIEWS_VIEW
+  REVIEWS_DELETE
+  REVIEWS_MODERATE
+
+  // Reports Management
+  REPORTS_VIEW
+  REPORTS_RESOLVE
+  REPORTS_DELETE
+
+  // Payments Management
+  PAYMENTS_VIEW
+  PAYMENTS_REFUND
+
+  // Notifications Management
+  NOTIFICATIONS_VIEW
+  NOTIFICATIONS_SEND
+  NOTIFICATIONS_BROADCAST
+
+  // Content Management
+  CONTENT_VIEW
+  CONTENT_MODERATE
+  CONTENT_DELETE
+
+  // Admin Management
+  ADMINS_VIEW
+  ADMINS_CREATE
+  ADMINS_UPDATE
+  ADMINS_DELETE
+  ADMINS_PERMISSIONS_MANAGE
+
+  // Dashboard & Analytics
+  DASHBOARD_VIEW
+  ANALYTICS_VIEW
+  REPORTS_EXPORT
+
+  // Settings
+  SETTINGS_VIEW
+  SETTINGS_UPDATE
+  SYSTEM_SETTINGS_MANAGE
+
+  // Billing
+  BILLING_VIEW
+  INVOICES_VIEW
+  INVOICES_CREATE
+  INVOICES_UPDATE
+}
+
+model User {
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  password         String
+  role             UserRole  @default(CUSTOMER)
+  isActive         Boolean   @default(true)
+  emailVerified    Boolean   @default(false)
+  resetToken       String?
+  resetTokenExpiry DateTime?
+
+  // Two-Factor Authentication
+  twoFactorEnabled Boolean @default(false)
+  twoFactorSecret  String? @db.Text
+
+  // Notification Settings
+  notificationSettings Json? @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  platformAdmin        PlatformAdmin?
+  salonOwner           SalonOwner?
+  customer             Customer?
+  notifications        Notification[]
+  reports              Report[]              @relation("Reporter")
+  reportedUsers        Report[]              @relation("ReportedUser")
+  auditLogs            AuditLog[]
+  twoFactorBackupCodes TwoFactorBackupCode[]
+  permissionChanges    PermissionChangeLog[] @relation("PermissionChanger")
+  backupLogs           BackupLog[]
+}
+
+model PlatformAdmin {
+  id          Int       @id @default(autoincrement())
+  userId      Int       @unique
+  user        User      @relation(fields: [userId], references: [id])
+  fullName    String
+  permissions Json      @default("{}")
+  lastLogin   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  permissionChanges PermissionChangeLog[]
+}
+
+model SalonOwner {
+  id                    Int                @id @default(autoincrement())
+  userId                Int                @unique
+  user                  User               @relation(fields: [userId], references: [id])
+  fullName              String
+  phone                 String
+  subscriptionType      SubscriptionType   @default(MONTHLY)
+  subscriptionStatus    SubscriptionStatus @default(ACTIVE)
+  subscriptionStartDate DateTime
+  subscriptionEndDate   DateTime
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  salons                Salon[]
+}
+
+model Salon {
+  id           Int        @id @default(autoincrement())
+  ownerId      Int
+  owner        SalonOwner @relation(fields: [ownerId], references: [id])
+  name         String
+  logo         String?
+  description  String?
+  address      String
+  latitude     Float
+  longitude    Float
+  workingHours Json       @default("{}")
+  images       Json       @default("[]")
+  rating       Float      @default(0.0)
+  totalReviews Int        @default(0)
+  isActive     Boolean    @default(true)
+  isApproved   Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // Relations
+  packages  Package[]
+  visits    Visit[]
+  reviews   Review[]
+  favorites Favorite[]
+}
+
+model Customer {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique
+  user         User     @relation(fields: [userId], references: [id])
+  fullName     String
+  phone        String?
+  profileImage String?
+  address      String?
+  latitude     Float?
+  longitude    Float?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  subscriptions Subscription[]
+  reviews       Review[]
+  favorites     Favorite[]
+  favoriteLists FavoriteList[]
+}
+
+model Package {
+  id           Int      @id @default(autoincrement())
+  salonId      Int
+  salon        Salon    @relation(fields: [salonId], references: [id])
+  name         String
+  description  String?
+  price        Float
+  visitsCount  Int
+  validityDays Int
+  services     Json     @default("[]")
+  images       Json     @default("[]")
+  isActive     Boolean  @default(true)
+  isPublished  Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  subscriptions Subscription[]
+  reviews       Review[]
+  favorites     Favorite[]
+}
+
+model Subscription {
+  id              Int                @id @default(autoincrement())
+  customerId      Int
+  customer        Customer           @relation(fields: [customerId], references: [id])
+  packageId       Int
+  package         Package            @relation(fields: [packageId], references: [id])
+  qrCode          String             @unique
+  visitsUsed      Int                @default(0)
+  visitsRemaining Int
+  startDate       DateTime
+  endDate         DateTime
+  status          SubscriptionStatus @default(ACTIVE)
+  autoRenewal     Boolean            @default(false)
+  paymentMethod   String?
+  paymentId       String?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  // Relations
+  visits   Visit[]
+  payments Payment[]
+}
+
+model Visit {
+  id             Int          @id @default(autoincrement())
+  subscriptionId Int
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  salonId        Int
+  salon          Salon        @relation(fields: [salonId], references: [id])
+  visitDate      DateTime
+  visitTime      DateTime
+  status         String       @default("PENDING")
+  serviceName    String? // ⭐ اسم الخدمة المختارة
+  notes          String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  review Review?
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id])
+  salonId    Int
+  salon      Salon    @relation(fields: [salonId], references: [id])
+  visitId    Int?     @unique
+  visit      Visit?   @relation(fields: [visitId], references: [id])
+  packageId  Int?
+  package    Package? @relation(fields: [packageId], references: [id])
+  rating     Int // 1-5 stars
+  comment    String?
+  response   String? // Response from salon owner
+  isReported Boolean  @default(false)
+  canEdit    Boolean  @default(true) // Can edit within 30 minutes
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Payment {
+  id             Int           @id @default(autoincrement())
+  subscriptionId Int
+  subscription   Subscription  @relation(fields: [subscriptionId], references: [id])
+  amount         Float
+  currency       String        @default("USD")
+  paymentMethod  String // visa, paypal, etc.
+  paymentId      String        @unique
+  transactionId  String?
+  status         PaymentStatus @default(PENDING)
+  failureReason  String?
+  refundAmount   Float?
+  refundDate     DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  user      User             @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  data      Json?            @default("{}") // Additional data for the notification
+  createdAt DateTime         @default(now())
+}
+
+model Report {
+  id             Int          @id @default(autoincrement())
+  reporterId     Int
+  reporter       User         @relation("Reporter", fields: [reporterId], references: [id])
+  reportedUserId Int
+  reportedUser   User         @relation("ReportedUser", fields: [reportedUserId], references: [id])
+  type           ReportType
+  description    String?
+  status         ReportStatus @default(PENDING)
+  adminNotes     String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+// Audit Log for security and monitoring
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  action     String // login, logout, create, update, delete, etc.
+  resource   String // user, salon, package, subscription, etc.
+  resourceId Int?
+  details    Json?    @default("{}")
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+}
+
+// Permission Change Log for tracking permission changes
+model PermissionChangeLog {
+  id             Int            @id @default(autoincrement())
+  adminId        Int // Admin whose permissions were changed
+  admin          PlatformAdmin  @relation(fields: [adminId], references: [id])
+  changedBy      Int // Admin who made the change
+  changedByUser  User           @relation("PermissionChanger", fields: [changedBy], references: [id])
+  permissionType PermissionType
+  action         String // GRANTED, REVOKED
+  previousValue  Boolean?
+  newValue       Boolean
+  reason         String? // Optional reason for the change
+  createdAt      DateTime       @default(now())
+
+  @@index([adminId])
+  @@index([changedBy])
+  @@index([createdAt])
+}
+
+// System Settings
+model SystemSetting {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  value       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Backup Log for tracking all backups
+model BackupLog {
+  id          Int       @id @default(autoincrement())
+  backupId    String    @unique
+  userId      Int?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  type        String    // FULL, INCREMENTAL, SYSTEM
+  description String?
+  filename    String
+  filePath    String
+  size        BigInt    // Size in bytes
+  status      String    @default("COMPLETED") // COMPLETED, FAILED, IN_PROGRESS
+  error       String?   // Error message if failed
+  isAutomatic Boolean   @default(false)
+  schedule    String?   // DAILY, WEEKLY, MONTHLY
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime? // When backup should be deleted
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([status])
+}
+
+// Two-Factor Authentication Backup Codes
+model TwoFactorBackupCode {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code      String // Hashed backup code
+  used      Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  usedAt    DateTime?
+
+  @@index([userId])
+}
+
+// Favorites - لحفظ الصالونات والباقات المفضلة
+model Favorite {
+  id         Int           @id @default(autoincrement())
+  customerId Int
+  customer   Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  salonId    Int?
+  salon      Salon?        @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  packageId  Int?
+  package    Package?      @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  listId     Int?
+  list       FavoriteList? @relation(fields: [listId], references: [id], onDelete: SetNull)
+  notes      String? // ملاحظات مخصصة
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@unique([customerId, salonId, packageId]) // منع التكرار
+  @@index([customerId])
+  @@index([salonId])
+  @@index([packageId])
+  @@index([listId])
+}
+
+// Favorite Lists - للقوائم المخصصة
+model FavoriteList {
+  id          Int      @id @default(autoincrement())
+  customerId  Int
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  color       String? // لون القائمة (hex color)
+  icon        String? // أيقونة القائمة
+  isDefault   Boolean  @default(false) // القائمة الافتراضية
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  favorites Favorite[]
+
+  @@index([customerId])
+}

@@ -1,0 +1,201 @@
+{
+  "backupId": "b0095a8e-ac0f-4905-9f77-dd5fd19922e9",
+  "userId": 80,
+  "type": "FULL",
+  "description": "Manual backup",
+  "createdAt": "2025-12-19T12:26:22.358Z",
+  "version": "1.0",
+  "data": {
+    "user": {
+      "id": 80,
+      "email": "lklk@gmail.com",
+      "role": "CUSTOMER",
+      "notificationSettings": {},
+      "twoFactorEnabled": false
+    },
+    "profile": {
+      "id": 33,
+      "userId": 80,
+      "fullName": "kkk",
+      "phone": "0959510189",
+      "profileImage": null,
+      "address": null,
+      "latitude": null,
+      "longitude": null,
+      "createdAt": "2025-12-19T12:20:00.925Z",
+      "updatedAt": "2025-12-19T12:20:00.925Z",
+      "subscriptions": [
+        {
+          "id": 42,
+          "customerId": 33,
+          "packageId": 34,
+          "qrCode": "c211a1c7-d04d-4414-a88a-bd3700cb843b",
+          "visitsUsed": 0,
+          "visitsRemaining": 2,
+          "startDate": "2025-12-19T12:20:29.685Z",
+          "endDate": "2026-01-21T12:20:29.685Z",
+          "status": "ACTIVE",
+          "autoRenewal": false,
+          "paymentMethod": "CASH",
+          "paymentId": "PAY_1766146827263",
+          "createdAt": "2025-12-19T12:20:29.720Z",
+          "updatedAt": "2025-12-19T12:20:29.720Z",
+          "package": {
+            "id": 34,
+            "salonId": 35,
+            "name": "suduf",
+            "description": "jdjdjd and I of quiet opportunity 🤫 and 😌 are is great very to of your the with in life business life business of 😀 and business you 😀 😊 your",
+            "price": 22,
+            "visitsCount": 2,
+            "validityDays": 33,
+            "services": [
+              "Hair Styling",
+              "Beard",
+              "Haircut",
+              "Hair Coloring",
+              "Hair Treatment"
+            ],
+            "images": [
+              "http://192.168.74.47:3000/uploads/packages/fb39a6b3-f5e9-4176-bc24-d77d587afdee.jpg"
+            ],
+            "isActive": true,
+            "isPublished": false,
+            "createdAt": "2025-11-12T18:00:50.254Z",
+            "updatedAt": "2025-11-12T18:00:50.254Z",
+            "salon": {
+              "id": 35,
+              "ownerId": 37,
+              "name": "llllkkkkkkllllkkkll",
+              "logo": "http://192.168.119.47:3000/uploads/salons/d9e6b1b1-7230-40b7-ad64-cd4b2f9e6606.jpg",
+              "description": "ueueueeueur and the I is of good little to and it the there to a person weeks 😌 and",
+              "address": "shhdhddy",
+              "latitude": 24.7136,
+              "longitude": 46.6753,
+              "workingHours": {
+                "sunday": "07:15-09:50",
+                "monday": "09:20-01:00",
+                "tuesday": "closed",
+                "wednesday": "closed",
+                "thursday": "closed",
+                "friday": "closed",
+                "saturday": "closed"
+              },
+              "images": [
+                "http://192.168.74.47:3000/uploads/salons/images/dcc8fadf-f6d9-4783-941b-b05bbff29828.jpg",
+                "http://192.168.74.47:3000/uploads/salons/images/52f89ca2-cf30-4836-824a-09bdd1623c78.jpg",
+                "http://192.168.74.47:3000/uploads/salons/images/b20957a8-5100-449a-b47c-835c5dc9fe18.jpg",
+                "http://192.168.74.47:3000/uploads/salons/images/31a3b24e-def0-48ff-ad42-f37e914e666b.jpg",
+                "http://192.168.74.47:3000/uploads/salons/images/21133544-205c-4bbd-aba2-39f87f9af410.jpg",
+                "http://192.168.74.47:3000/uploads/salons/images/c281aa37-755d-44e2-9616-089146aacd3f.png",
+                "http://192.168.74.47:3000/uploads/salons/images/8980d920-bd21-49ec-b69b-45703dab1eb2.jpg",
+                "http://192.168.74.47:3000/uploads/salons/images/eb9a056b-6eb6-4879-ab31-3f3585e592d9.jpg"
+              ],
+              "rating": 4.3,
+              "totalReviews": 3,
+              "isActive": true,
+              "isApproved": true,
+              "createdAt": "2025-11-12T16:53:28.854Z",
+              "updatedAt": "2025-12-19T12:23:37.537Z"
+            }
+          }
+        }
+      ],
+      "reviews": [
+        {
+          "id": 17,
+          "customerId": 33,
+          "salonId": 35,
+          "visitId": null,
+          "packageId": 34,
+          "rating": 5,
+          "comment": "رائعة",
+          "response": null,
+          "isReported": false,
+          "canEdit": true,
+          "createdAt": "2025-12-19T12:23:37.525Z",
+          "updatedAt": "2025-12-19T12:23:37.525Z"
+        }
+      ]
+    },
+    "salons": [],
+    "packages": [],
+    "visits": [],
+    "reviews": [],
+    "subscriptions": [
+      {
+        "id": 42,
+        "customerId": 33,
+        "packageId": 34,
+        "qrCode": "c211a1c7-d04d-4414-a88a-bd3700cb843b",
+        "visitsUsed": 0,
+        "visitsRemaining": 2,
+        "startDate": "2025-12-19T12:20:29.685Z",
+        "endDate": "2026-01-21T12:20:29.685Z",
+        "status": "ACTIVE",
+        "autoRenewal": false,
+        "paymentMethod": "CASH",
+        "paymentId": "PAY_1766146827263",
+        "createdAt": "2025-12-19T12:20:29.720Z",
+        "updatedAt": "2025-12-19T12:20:29.720Z",
+        "package": {
+          "id": 34,
+          "salonId": 35,
+          "name": "suduf",
+          "description": "jdjdjd and I of quiet opportunity 🤫 and 😌 are is great very to of your the with in life business life business of 😀 and business you 😀 😊 your",
+          "price": 22,
+          "visitsCount": 2,
+          "validityDays": 33,
+          "services": [
+            "Hair Styling",
+            "Beard",
+            "Haircut",
+            "Hair Coloring",
+            "Hair Treatment"
+          ],
+          "images": [
+            "http://192.168.74.47:3000/uploads/packages/fb39a6b3-f5e9-4176-bc24-d77d587afdee.jpg"
+          ],
+          "isActive": true,
+          "isPublished": false,
+          "createdAt": "2025-11-12T18:00:50.254Z",
+          "updatedAt": "2025-11-12T18:00:50.254Z",
+          "salon": {
+            "id": 35,
+            "ownerId": 37,
+            "name": "llllkkkkkkllllkkkll",
+            "logo": "http://192.168.119.47:3000/uploads/salons/d9e6b1b1-7230-40b7-ad64-cd4b2f9e6606.jpg",
+            "description": "ueueueeueur and the I is of good little to and it the there to a person weeks 😌 and",
+            "address": "shhdhddy",
+            "latitude": 24.7136,
+            "longitude": 46.6753,
+            "workingHours": {
+              "sunday": "07:15-09:50",
+              "monday": "09:20-01:00",
+              "tuesday": "closed",
+              "wednesday": "closed",
+              "thursday": "closed",
+              "friday": "closed",
+              "saturday": "closed"
+            },
+            "images": [
+              "http://192.168.74.47:3000/uploads/salons/images/dcc8fadf-f6d9-4783-941b-b05bbff29828.jpg",
+              "http://192.168.74.47:3000/uploads/salons/images/52f89ca2-cf30-4836-824a-09bdd1623c78.jpg",
+              "http://192.168.74.47:3000/uploads/salons/images/b20957a8-5100-449a-b47c-835c5dc9fe18.jpg",
+              "http://192.168.74.47:3000/uploads/salons/images/31a3b24e-def0-48ff-ad42-f37e914e666b.jpg",
+              "http://192.168.74.47:3000/uploads/salons/images/21133544-205c-4bbd-aba2-39f87f9af410.jpg",
+              "http://192.168.74.47:3000/uploads/salons/images/c281aa37-755d-44e2-9616-089146aacd3f.png",
+              "http://192.168.74.47:3000/uploads/salons/images/8980d920-bd21-49ec-b69b-45703dab1eb2.jpg",
+              "http://192.168.74.47:3000/uploads/salons/images/eb9a056b-6eb6-4879-ab31-3f3585e592d9.jpg"
+            ],
+            "rating": 4.3,
+            "totalReviews": 3,
+            "isActive": true,
+            "isApproved": true,
+            "createdAt": "2025-11-12T16:53:28.854Z",
+            "updatedAt": "2025-12-19T12:23:37.537Z"
+          }
+        }
+      }
+    ]
+  }
+}

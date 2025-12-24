@@ -1,0 +1,307 @@
+{
+  "description": "اختبارات باقات الصالونات",
+  "base_url": "http://localhost:3000",
+  "required_role": "SALON_OWNER",
+  "endpoints": {
+    "get_package_by_id": {
+      "name": "عرض تفاصيل باقة",
+      "method": "GET",
+      "url": "/salons/packages/1",
+      "authentication": "none",
+      "role": "ANY",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 1,
+        "salonId": 2,
+        "name": "Premium Package",
+        "description": "Full service package",
+        "price": 150.0,
+        "visitsCount": 3,
+        "validityDays": 30,
+        "isActive": true,
+        "isPublished": true,
+        "salon": {
+          "id": 2,
+          "name": "Elite Barber Shop"
+        }
+      },
+      "notes": "متاح للجميع - استبدل 1 بمعرف الباقة"
+    },
+    "create_package": {
+      "name": "إنشاء باقة جديدة",
+      "method": "POST",
+      "url": "/salons/2/packages",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "name": "الباقة الذهبية",
+        "description": "باقة شاملة تشمل جميع الخدمات",
+        "price": 200.0,
+        "visitsCount": 5,
+        "validityDays": 60
+      },
+      "expected_response": {
+        "id": 2,
+        "salonId": 2,
+        "name": "الباقة الذهبية",
+        "price": 200.0,
+        "visitsCount": 5,
+        "validityDays": 60,
+        "isActive": true,
+        "isPublished": false,
+        "message": "Package created successfully"
+      },
+      "notes": "يمكن إنشاء باقات لصالونك فقط - استبدل 2 بمعرف صالونك"
+    },
+    "create_basic_package": {
+      "name": "إنشاء باقة أساسية",
+      "method": "POST",
+      "url": "/salons/2/packages",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "name": "الباقة الأساسية",
+        "description": "قص شعر بسيط",
+        "price": 50.0,
+        "visitsCount": 1,
+        "validityDays": 7
+      },
+      "expected_response": {
+        "id": 3,
+        "name": "الباقة الأساسية",
+        "message": "Package created successfully"
+      },
+      "notes": "باقة زيارة واحدة"
+    },
+    "create_premium_package": {
+      "name": "إنشاء باقة مميزة",
+      "method": "POST",
+      "url": "/salons/2/packages",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "name": "الباقة المميزة",
+        "description": "خدمات متكاملة مع عناية إضافية",
+        "price": 300.0,
+        "visitsCount": 10,
+        "validityDays": 90
+      },
+      "expected_response": {
+        "id": 4,
+        "name": "الباقة المميزة",
+        "message": "Package created successfully"
+      },
+      "notes": "باقة طويلة المدى"
+    },
+    "update_package": {
+      "name": "تحديث معلومات باقة",
+      "method": "PATCH",
+      "url": "/salons/packages/1",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "name": "Premium Package - Updated",
+        "description": "Updated description",
+        "price": 180.0
+      },
+      "expected_response": {
+        "id": 1,
+        "name": "Premium Package - Updated",
+        "price": 180.0,
+        "message": "Package updated successfully"
+      },
+      "notes": "يمكن تحديث باقات صالونك فقط"
+    },
+    "publish_package": {
+      "name": "نشر باقة",
+      "method": "PATCH",
+      "url": "/salons/packages/1/publish",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 1,
+        "isPublished": true,
+        "message": "Package published successfully"
+      },
+      "notes": "يجعل الباقة متاحة للاشتراك"
+    },
+    "unpublish_package": {
+      "name": "إلغاء نشر باقة",
+      "method": "PATCH",
+      "url": "/salons/packages/1/unpublish",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 1,
+        "isPublished": false,
+        "message": "Package unpublished successfully"
+      },
+      "notes": "يخفي الباقة من العملاء"
+    },
+    "delete_package": {
+      "name": "حذف باقة",
+      "method": "DELETE",
+      "url": "/salons/packages/1",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "message": "Package deleted successfully"
+      },
+      "notes": "حذف دائم - لا يمكن حذف باقة لديها اشتراكات نشطة"
+    }
+  },
+  "package_examples": {
+    "single_visit": {
+      "name": "باقة زيارة واحدة",
+      "price": 50.0,
+      "visitsCount": 1,
+      "validityDays": 7,
+      "description": "مناسبة للتجربة الأولى"
+    },
+    "monthly_basic": {
+      "name": "الباقة الشهرية الأساسية",
+      "price": 100.0,
+      "visitsCount": 3,
+      "validityDays": 30,
+      "description": "ثلاث زيارات في الشهر"
+    },
+    "monthly_premium": {
+      "name": "الباقة الشهرية المميزة",
+      "price": 150.0,
+      "visitsCount": 5,
+      "validityDays": 30,
+      "description": "خمس زيارات في الشهر"
+    },
+    "quarterly": {
+      "name": "الباقة الفصلية",
+      "price": 400.0,
+      "visitsCount": 12,
+      "validityDays": 90,
+      "description": "اثنا عشر زيارة في ثلاثة أشهر"
+    },
+    "yearly": {
+      "name": "الباقة السنوية",
+      "price": 1500.0,
+      "visitsCount": 48,
+      "validityDays": 365,
+      "description": "ثمانية وأربعون زيارة في السنة"
+    }
+  },
+  "test_scenarios": {
+    "scenario_1": {
+      "name": "إنشاء وإدارة باقات",
+      "steps": [
+        "1. استخدم create_basic_package لإنشاء باقة أساسية",
+        "2. استخدم create_premium_package لإنشاء باقة مميزة",
+        "3. استخدم publish_package لنشر الباقات",
+        "4. استخدم get_package_by_id للتحقق من البيانات",
+        "5. استخدم update_package لتحديث السعر"
+      ]
+    },
+    "scenario_2": {
+      "name": "دورة حياة باقة كاملة",
+      "steps": [
+        "1. إنشاء باقة جديدة (غير منشورة)",
+        "2. مراجعة وتعديل التفاصيل",
+        "3. نشر الباقة للعملاء",
+        "4. إلغاء النشر عند الحاجة",
+        "5. حذف الباقة إذا لم تعد مطلوبة"
+      ]
+    }
+  },
+  "pricing_strategies": {
+    "discount_bundle": {
+      "description": "باقات مخفضة للزيارات المتعددة",
+      "example": {
+        "single_visit_price": 50.0,
+        "three_visits_price": 120.0,
+        "savings": "20% discount"
+      }
+    },
+    "loyalty_package": {
+      "description": "باقات طويلة الأجل للعملاء المخلصين",
+      "example": {
+        "monthly_price": 150.0,
+        "yearly_price": 1500.0,
+        "savings": "Save 200 SAR per year"
+      }
+    }
+  },
+  "error_cases": {
+    "invalid_price": {
+      "name": "سعر غير صحيح",
+      "endpoint": "create_package",
+      "body": {
+        "name": "Test Package",
+        "price": -50.0,
+        "visitsCount": 3,
+        "validityDays": 30
+      },
+      "expected_error": {
+        "statusCode": 400,
+        "message": "Price must be positive"
+      }
+    },
+    "invalid_visits_count": {
+      "name": "عدد زيارات غير صحيح",
+      "endpoint": "create_package",
+      "body": {
+        "name": "Test Package",
+        "price": 100.0,
+        "visitsCount": 0,
+        "validityDays": 30
+      },
+      "expected_error": {
+        "statusCode": 400,
+        "message": "Visits count must be at least 1"
+      }
+    },
+    "unauthorized_update": {
+      "name": "محاولة تحديث باقة صالون آخر",
+      "endpoint": "update_package",
+      "notes": "يجب أن تكون مالك الصالون",
+      "expected_error": {
+        "statusCode": 403,
+        "message": "You don't have permission to update this package"
+      }
+    },
+    "package_with_active_subscriptions": {
+      "name": "حذف باقة لديها اشتراكات نشطة",
+      "endpoint": "delete_package",
+      "expected_error": {
+        "statusCode": 400,
+        "message": "Cannot delete package with active subscriptions"
+      }
+    }
+  }
+}

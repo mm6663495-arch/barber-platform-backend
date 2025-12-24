@@ -1,0 +1,141 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
+    environment:
+      name: staging
+      url: https://staging-api.barber-platform.com
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    - name: 📦 Install dependencies
+      run: npm ci --legacy-peer-deps
+
+    - name: 🏗️ Build application
+      run: npm run build
+
+    - name: 🚀 Deploy to staging
+      env:
+        DEPLOY_KEY: ${{ secrets.STAGING_DEPLOY_KEY }}
+        STAGING_HOST: ${{ secrets.STAGING_HOST }}
+        STAGING_USER: ${{ secrets.STAGING_USER }}
+      run: |
+        echo "Deploying to staging environment..."
+        # Add your deployment script here
+        # Example: rsync, scp, or deployment service API
+
+    - name: 🗄️ Run database migrations
+      env:
+        DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+      run: |
+        npx prisma migrate deploy
+
+    - name: 🔄 Restart application
+      run: |
+        echo "Restarting staging application..."
+        # Add restart command here
+
+    - name: ✅ Health check
+      run: |
+        echo "Running health check..."
+        # curl -f https://staging-api.barber-platform.com/health || exit 1
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.environment == 'production'
+    environment:
+      name: production
+      url: https://api.barber-platform.com
+    needs: []
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    - name: 📦 Install dependencies
+      run: npm ci --legacy-peer-deps
+
+    - name: 🏗️ Build application
+      run: npm run build
+
+    - name: 🚀 Deploy to production
+      env:
+        DEPLOY_KEY: ${{ secrets.PRODUCTION_DEPLOY_KEY }}
+        PRODUCTION_HOST: ${{ secrets.PRODUCTION_HOST }}
+        PRODUCTION_USER: ${{ secrets.PRODUCTION_USER }}
+      run: |
+        echo "Deploying to production environment..."
+        # Add your deployment script here
+
+    - name: 🗄️ Run database migrations
+      env:
+        DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+      run: |
+        npx prisma migrate deploy
+
+    - name: 🔄 Restart application
+      run: |
+        echo "Restarting production application..."
+        # Add restart command here
+
+    - name: ✅ Health check
+      run: |
+        echo "Running health check..."
+        # curl -f https://api.barber-platform.com/health || exit 1
+
+    - name: 📢 Notify team
+      if: success()
+      run: |
+        echo "Production deployment successful!"
+        # Add notification logic (Slack, Discord, Email, etc.)
+
+  rollback:
+    name: Rollback
+    runs-on: ubuntu-latest
+    if: failure()
+    environment:
+      name: production
+    
+    steps:
+    - name: 🔙 Rollback deployment
+      run: |
+        echo "Rolling back to previous version..."
+        # Add rollback logic here
+
+    - name: 📢 Notify team about rollback
+      run: |
+        echo "Deployment rolled back!"
+        # Add notification logic
+

@@ -1,0 +1,1 @@
+UPDATE Package SET isPublished = true WHERE id IN (4, 5);

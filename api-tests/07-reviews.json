@@ -1,0 +1,166 @@
+{
+  "description": "اختبارات المراجعات والتقييمات",
+  "base_url": "http://localhost:3000",
+  "rating_scale": "1-5 نجوم",
+  "endpoints": {
+    "create_review": {
+      "name": "إنشاء مراجعة",
+      "method": "POST",
+      "url": "/reviews",
+      "authentication": "required",
+      "role": "CUSTOMER",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "visitId": 1,
+        "rating": 5,
+        "comment": "خدمة ممتازة! الموظفون محترفون والنتيجة رائعة."
+      },
+      "expected_response": {
+        "id": 1,
+        "customerId": 1,
+        "salonId": 2,
+        "visitId": 1,
+        "rating": 5,
+        "comment": "خدمة ممتازة!",
+        "canEdit": true,
+        "message": "Review created successfully"
+      },
+      "notes": "يمكن التعديل خلال 30 دقيقة"
+    },
+    "get_all_reviews": {
+      "name": "عرض جميع المراجعات",
+      "method": "GET",
+      "url": "/reviews",
+      "authentication": "none",
+      "role": "ANY",
+      "query_params": {
+        "salonId": "optional",
+        "customerId": "optional",
+        "page": 1,
+        "limit": 10
+      },
+      "expected_response": {
+        "reviews": [],
+        "pagination": {}
+      },
+      "notes": "متاح للجميع"
+    },
+    "get_salon_reviews": {
+      "name": "مراجعات صالون محدد",
+      "method": "GET",
+      "url": "/reviews/salon/2",
+      "authentication": "none",
+      "role": "ANY",
+      "query_params": {
+        "page": 1,
+        "limit": 10
+      },
+      "expected_response": {
+        "reviews": [],
+        "averageRating": 4.5,
+        "totalReviews": 10
+      },
+      "notes": "استبدل 2 بمعرف الصالون"
+    },
+    "get_my_reviews": {
+      "name": "مراجعاتي",
+      "method": "GET",
+      "url": "/reviews/my-reviews",
+      "authentication": "required",
+      "role": "CUSTOMER",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}"
+      },
+      "expected_response": {
+        "reviews": []
+      },
+      "notes": "مراجعات العميل الحالي"
+    },
+    "update_review": {
+      "name": "تحديث مراجعة",
+      "method": "PATCH",
+      "url": "/reviews/1",
+      "authentication": "required",
+      "role": "CUSTOMER",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "rating": 4,
+        "comment": "تعليق محدث"
+      },
+      "expected_response": {
+        "id": 1,
+        "rating": 4,
+        "comment": "تعليق محدث"
+      },
+      "notes": "خلال 30 دقيقة من الإنشاء"
+    },
+    "respond_to_review": {
+      "name": "الرد على مراجعة",
+      "method": "PATCH",
+      "url": "/reviews/1/respond",
+      "authentication": "required",
+      "role": "SALON_OWNER",
+      "headers": {
+        "Authorization": "Bearer {{salon_owner_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "response": "شكراً لك على مراجعتك! نسعد بخدمتك دائماً."
+      },
+      "expected_response": {
+        "id": 1,
+        "response": "شكراً لك على مراجعتك!"
+      },
+      "notes": "صاحب الصالون يرد على المراجعة"
+    },
+    "report_review": {
+      "name": "الإبلاغ عن مراجعة",
+      "method": "POST",
+      "url": "/reviews/1/report",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "reason": "محتوى غير لائق"
+      },
+      "expected_response": {
+        "message": "Review reported successfully"
+      },
+      "notes": "للإبلاغ عن محتوى غير مناسب"
+    },
+    "delete_review": {
+      "name": "حذف مراجعة",
+      "method": "DELETE",
+      "url": "/reviews/1",
+      "authentication": "required",
+      "role": "CUSTOMER",
+      "headers": {
+        "Authorization": "Bearer {{customer_token}}"
+      },
+      "expected_response": {
+        "message": "Review deleted successfully"
+      },
+      "notes": "العميل يحذف مراجعته"
+    }
+  },
+  "test_scenarios": {
+    "scenario_1": {
+      "name": "دورة مراجعة كاملة",
+      "steps": [
+        "1. create_review (Customer)",
+        "2. get_salon_reviews للتحقق",
+        "3. respond_to_review (Salon Owner)",
+        "4. update_review إذا احتاج العميل"
+      ]
+    }
+  }
+}

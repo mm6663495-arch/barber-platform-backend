@@ -1,0 +1,291 @@
+// This is your Prisma schema file for Barber Platform Backend
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums for better type safety
+enum UserRole {
+  ADMIN
+  SALON_OWNER
+  CUSTOMER
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  SUSPENDED
+}
+
+enum SubscriptionType {
+  MONTHLY
+  YEARLY
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum NotificationType {
+  SUBSCRIPTION
+  VISIT
+  REVIEW
+  GENERAL
+  PAYMENT
+  EXPIRY_WARNING
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  RESOLVED
+}
+
+enum ReportType {
+  INAPPROPRIATE_CONTENT
+  FAKE_REVIEW
+  SPAM
+  OTHER
+}
+
+model User {
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  password         String
+  role             UserRole  @default(CUSTOMER)
+  isActive         Boolean   @default(true)
+  emailVerified    Boolean   @default(false)
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Relations
+  platformAdmin PlatformAdmin?
+  salonOwner    SalonOwner?
+  customer      Customer?
+  notifications Notification[]
+  reports       Report[]       @relation("Reporter")
+  reportedUsers Report[]       @relation("ReportedUser")
+  auditLogs     AuditLog[]
+}
+
+model PlatformAdmin {
+  id          Int       @id @default(autoincrement())
+  userId      Int       @unique
+  user        User      @relation(fields: [userId], references: [id])
+  fullName    String
+  permissions Json      @default("{}")
+  lastLogin   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model SalonOwner {
+  id                    Int                @id @default(autoincrement())
+  userId                Int                @unique
+  user                  User               @relation(fields: [userId], references: [id])
+  fullName              String
+  phone                 String
+  subscriptionType      SubscriptionType   @default(MONTHLY)
+  subscriptionStatus    SubscriptionStatus @default(ACTIVE)
+  subscriptionStartDate DateTime
+  subscriptionEndDate   DateTime
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  salons                Salon[]
+}
+
+model Salon {
+  id           Int        @id @default(autoincrement())
+  ownerId      Int
+  owner        SalonOwner @relation(fields: [ownerId], references: [id])
+  name         String
+  logo         String?
+  description  String?
+  address      String
+  latitude     Float
+  longitude    Float
+  workingHours Json       @default("{}")
+  images       Json       @default("[]")
+  rating       Float      @default(0.0)
+  totalReviews Int        @default(0)
+  isActive     Boolean    @default(true)
+  isApproved   Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // Relations
+  packages Package[]
+  visits   Visit[]
+  reviews  Review[]
+}
+
+model Customer {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique
+  user         User     @relation(fields: [userId], references: [id])
+  fullName     String
+  phone        String?
+  profileImage String?
+  address      String?
+  latitude     Float?
+  longitude    Float?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  subscriptions Subscription[]
+  reviews       Review[]
+}
+
+model Package {
+  id           Int      @id @default(autoincrement())
+  salonId      Int
+  salon        Salon    @relation(fields: [salonId], references: [id])
+  name         String
+  description  String?
+  price        Float
+  visitsCount  Int
+  validityDays Int
+  isActive     Boolean  @default(true)
+  isPublished  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id              Int                @id @default(autoincrement())
+  customerId      Int
+  customer        Customer           @relation(fields: [customerId], references: [id])
+  packageId       Int
+  package         Package            @relation(fields: [packageId], references: [id])
+  qrCode          String             @unique
+  visitsUsed      Int                @default(0)
+  visitsRemaining Int
+  startDate       DateTime
+  endDate         DateTime
+  status          SubscriptionStatus @default(ACTIVE)
+  autoRenewal     Boolean            @default(false)
+  paymentMethod   String?
+  paymentId       String?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  // Relations
+  visits   Visit[]
+  payments Payment[]
+}
+
+model Visit {
+  id             Int          @id @default(autoincrement())
+  subscriptionId Int
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  salonId        Int
+  salon          Salon        @relation(fields: [salonId], references: [id])
+  visitDate      DateTime
+  visitTime      DateTime
+  notes          String?
+  createdAt      DateTime     @default(now())
+
+  // Relations
+  review Review?
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id])
+  salonId    Int
+  salon      Salon    @relation(fields: [salonId], references: [id])
+  visitId    Int      @unique
+  visit      Visit    @relation(fields: [visitId], references: [id])
+  rating     Int // 1-5 stars
+  comment    String?
+  response   String? // Response from salon owner
+  isReported Boolean  @default(false)
+  canEdit    Boolean  @default(true) // Can edit within 30 minutes
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Payment {
+  id             Int           @id @default(autoincrement())
+  subscriptionId Int
+  subscription   Subscription  @relation(fields: [subscriptionId], references: [id])
+  amount         Float
+  currency       String        @default("USD")
+  paymentMethod  String // visa, paypal, etc.
+  paymentId      String        @unique
+  transactionId  String?
+  status         PaymentStatus @default(PENDING)
+  failureReason  String?
+  refundAmount   Float?
+  refundDate     DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  user      User             @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  data      Json?            @default("{}") // Additional data for the notification
+  createdAt DateTime         @default(now())
+}
+
+model Report {
+  id             Int          @id @default(autoincrement())
+  reporterId     Int
+  reporter       User         @relation("Reporter", fields: [reporterId], references: [id])
+  reportedUserId Int
+  reportedUser   User         @relation("ReportedUser", fields: [reportedUserId], references: [id])
+  type           ReportType
+  description    String?
+  status         ReportStatus @default(PENDING)
+  adminNotes     String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+// Audit Log for security and monitoring
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  action     String // login, logout, create, update, delete, etc.
+  resource   String // user, salon, package, subscription, etc.
+  resourceId Int?
+  details    Json?    @default("{}")
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+}
+
+// System Settings
+model SystemSetting {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  value       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

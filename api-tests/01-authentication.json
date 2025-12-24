@@ -1,0 +1,289 @@
+{
+  "description": "اختبارات المصادقة والتسجيل",
+  "base_url": "http://localhost:3000",
+  "endpoints": {
+    "login_admin": {
+      "name": "تسجيل دخول المدير",
+      "method": "POST",
+      "url": "/auth/login",
+      "authentication": "none",
+      "role": "ANY",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "email": "admin@barber.com",
+        "password": "admin123"
+      },
+      "expected_response": {
+        "user": {
+          "id": 1,
+          "email": "admin@barber.com",
+          "role": "ADMIN",
+          "isActive": true,
+          "profile": {}
+        },
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      },
+      "notes": "احفظ الـ token لاستخدامه في الطلبات التالية"
+    },
+    "login_salon_owner": {
+      "name": "تسجيل دخول صاحب صالون",
+      "method": "POST",
+      "url": "/auth/login",
+      "authentication": "none",
+      "role": "ANY",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "email": "owner@salon.com",
+        "password": "owner123"
+      },
+      "expected_response": {
+        "user": {
+          "id": 2,
+          "email": "owner@salon.com",
+          "role": "SALON_OWNER",
+          "isActive": true,
+          "profile": {
+            "id": 1,
+            "fullName": "Ahmed Al-Salem",
+            "phone": "+966501234567"
+          }
+        },
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      },
+      "notes": "احفظ الـ token لاستخدامه في عمليات الصالونات"
+    },
+    "login_customer": {
+      "name": "تسجيل دخول عميل",
+      "method": "POST",
+      "url": "/auth/login",
+      "authentication": "none",
+      "role": "ANY",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "email": "customer@test.com",
+        "password": "customer123"
+      },
+      "expected_response": {
+        "user": {
+          "id": 3,
+          "email": "customer@test.com",
+          "role": "CUSTOMER",
+          "isActive": true,
+          "profile": {
+            "id": 1,
+            "fullName": "Mohammed Ali",
+            "phone": "+966507654321"
+          }
+        },
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      },
+      "notes": "احفظ الـ token لاستخدامه في الاشتراكات والمراجعات"
+    },
+    "register_new_customer": {
+      "name": "تسجيل عميل جديد",
+      "method": "POST",
+      "url": "/auth/register",
+      "authentication": "none",
+      "role": "ANY",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "email": "newcustomer@test.com",
+        "password": "password123",
+        "role": "CUSTOMER",
+        "fullName": "عميل جديد",
+        "phone": "+966501111111"
+      },
+      "expected_response": {
+        "user": {
+          "id": 4,
+          "email": "newcustomer@test.com",
+          "role": "CUSTOMER"
+        },
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      },
+      "notes": "يمكن للجميع التسجيل كعملاء"
+    },
+    "register_new_salon_owner": {
+      "name": "تسجيل صاحب صالون جديد",
+      "method": "POST",
+      "url": "/auth/register",
+      "authentication": "none",
+      "role": "ANY",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "email": "newsalonowner@test.com",
+        "password": "password123",
+        "role": "SALON_OWNER",
+        "fullName": "صاحب صالون جديد",
+        "phone": "+966502222222"
+      },
+      "expected_response": {
+        "user": {
+          "id": 5,
+          "email": "newsalonowner@test.com",
+          "role": "SALON_OWNER"
+        },
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      },
+      "notes": "تحتاج موافقة Admin لإنشاء الصالونات"
+    },
+    "get_profile": {
+      "name": "عرض الملف الشخصي",
+      "method": "GET",
+      "url": "/auth/profile",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 1,
+        "email": "admin@barber.com",
+        "role": "ADMIN",
+        "profile": {}
+      },
+      "notes": "يعرض معلومات المستخدم الحالي"
+    },
+    "refresh_token": {
+      "name": "تحديث الـ Token",
+      "method": "POST",
+      "url": "/auth/refresh",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        "expiresIn": "7d"
+      },
+      "notes": "لتحديث الـ token قبل انتهاء صلاحيته"
+    },
+    "change_password": {
+      "name": "تغيير كلمة المرور",
+      "method": "POST",
+      "url": "/auth/change-password",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "currentPassword": "admin123",
+        "newPassword": "newpassword123"
+      },
+      "expected_response": {
+        "message": "Password changed successfully"
+      },
+      "notes": "يحتاج كلمة المرور الحالية"
+    },
+    "forgot_password": {
+      "name": "نسيت كلمة المرور",
+      "method": "POST",
+      "url": "/auth/forgot-password",
+      "authentication": "none",
+      "role": "ANY",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "email": "admin@barber.com"
+      },
+      "expected_response": {
+        "message": "Password reset email sent"
+      },
+      "notes": "يرسل رابط إعادة تعيين كلمة المرور"
+    },
+    "validate_admin": {
+      "name": "التحقق من صلاحيات المدير",
+      "method": "GET",
+      "url": "/auth/validate",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "valid": true,
+        "user": {
+          "userId": 1,
+          "email": "admin@barber.com",
+          "role": "ADMIN"
+        }
+      },
+      "notes": "للتحقق من أن المستخدم هو Admin"
+    }
+  },
+  "test_scenarios": {
+    "scenario_1": {
+      "name": "سيناريو تسجيل الدخول الكامل",
+      "steps": [
+        "1. استخدم login_admin للحصول على token",
+        "2. احفظ الـ token",
+        "3. استخدم get_profile للتحقق من البيانات",
+        "4. استخدم validate_admin للتحقق من الصلاحيات"
+      ]
+    },
+    "scenario_2": {
+      "name": "سيناريو تسجيل مستخدم جديد",
+      "steps": [
+        "1. استخدم register_new_customer",
+        "2. احفظ الـ token المُرجع",
+        "3. استخدم get_profile للتحقق من التسجيل"
+      ]
+    }
+  },
+  "error_cases": {
+    "invalid_credentials": {
+      "name": "بيانات دخول خاطئة",
+      "endpoint": "login_admin",
+      "body": {
+        "email": "admin@barber.com",
+        "password": "wrongpassword"
+      },
+      "expected_error": {
+        "statusCode": 401,
+        "message": "Invalid credentials"
+      }
+    },
+    "missing_email": {
+      "name": "البريد الإلكتروني مفقود",
+      "endpoint": "login_admin",
+      "body": {
+        "password": "admin123"
+      },
+      "expected_error": {
+        "statusCode": 400,
+        "message": "Validation failed"
+      }
+    },
+    "duplicate_email": {
+      "name": "بريد إلكتروني مُستخدم",
+      "endpoint": "register_new_customer",
+      "body": {
+        "email": "admin@barber.com",
+        "password": "password123",
+        "role": "CUSTOMER",
+        "fullName": "Test User"
+      },
+      "expected_error": {
+        "statusCode": 409,
+        "message": "User with this email already exists"
+      }
+    }
+  }
+}

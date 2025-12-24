@@ -1,0 +1,115 @@
+# ========================================
+# NODE
+# ========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ========================================
+# ENVIRONMENT FILES (CRITICAL - NEVER COMMIT!)
+# ========================================
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
+# ========================================
+# BUILD & DIST
+# ========================================
+dist/
+build/
+*.js.map
+*.d.ts.map
+
+# ========================================
+# LOGS
+# ========================================
+logs/
+*.log
+
+# ========================================
+# OPERATING SYSTEM
+# ========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ========================================
+# IDE & EDITORS
+# ========================================
+# VSCode
+.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# ========================================
+# TESTING
+# ========================================
+coverage/
+.nyc_output/
+*.lcov
+
+# ========================================
+# UPLOADS & TEMP FILES
+# ========================================
+uploads/*
+!uploads/.gitkeep
+!uploads/*/
+!uploads/*/.gitkeep
+uploads/*/*
+temp/
+tmp/
+
+# ========================================
+# DATABASE
+# ========================================
+*.db
+*.sqlite
+*.sqlite3
+
+# ========================================
+# PRISMA
+# ========================================
+prisma/*.db
+prisma/*.db-journal
+
+# ========================================
+# DOCKER
+# ========================================
+.dockerignore
+
+# ========================================
+# MISC
+# ========================================
+.cache/
+*.swp
+*.swo
+*.swn
+.eslintcache

@@ -1,0 +1,147 @@
+{
+  "description": "اختبارات الإشعارات",
+  "base_url": "http://localhost:3000",
+  "notification_types": ["SUBSCRIPTION", "VISIT", "REVIEW", "PAYMENT", "GENERAL", "EXPIRY_WARNING"],
+  "endpoints": {
+    "get_my_notifications": {
+      "name": "عرض إشعاراتي",
+      "method": "GET",
+      "url": "/notifications",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "query_params": {
+        "page": 1,
+        "limit": 20,
+        "unreadOnly": "false"
+      },
+      "expected_response": {
+        "notifications": [
+          {
+            "id": 1,
+            "title": "اشتراك جديد",
+            "message": "تم إنشاء اشتراكك بنجاح",
+            "type": "SUBSCRIPTION",
+            "isRead": false,
+            "createdAt": "2024-01-01T10:00:00.000Z"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 5
+        }
+      },
+      "notes": "إشعارات المستخدم الحالي"
+    },
+    "get_unread_count": {
+      "name": "عدد الإشعارات غير المقروءة",
+      "method": "GET",
+      "url": "/notifications/unread-count",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "unreadCount": 3
+      },
+      "notes": "للعرض في الـ notification badge"
+    },
+    "mark_as_read": {
+      "name": "وضع علامة مقروءة على إشعار",
+      "method": "PATCH",
+      "url": "/notifications/1/read",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "id": 1,
+        "isRead": true,
+        "message": "Notification marked as read"
+      },
+      "notes": "عند فتح الإشعار"
+    },
+    "mark_all_as_read": {
+      "name": "وضع علامة مقروءة على الكل",
+      "method": "PATCH",
+      "url": "/notifications/read-all",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "updatedCount": 5,
+        "message": "All notifications marked as read"
+      },
+      "notes": "لمسح جميع الإشعارات"
+    },
+    "delete_notification": {
+      "name": "حذف إشعار",
+      "method": "DELETE",
+      "url": "/notifications/1",
+      "authentication": "required",
+      "role": "ANY",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "expected_response": {
+        "message": "Notification deleted successfully"
+      },
+      "notes": "حذف إشعار واحد"
+    },
+    "create_notification": {
+      "name": "إنشاء إشعار (Admin)",
+      "method": "POST",
+      "url": "/notifications",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "userId": 3,
+        "title": "إشعار مهم",
+        "message": "لديك تحديث جديد",
+        "type": "GENERAL"
+      },
+      "expected_response": {
+        "id": 10,
+        "message": "Notification created successfully"
+      },
+      "notes": "Admin يرسل إشعار لمستخدم محدد"
+    },
+    "send_general_notification": {
+      "name": "إرسال إشعار عام",
+      "method": "POST",
+      "url": "/notifications/general",
+      "authentication": "required",
+      "role": "ADMIN",
+      "headers": {
+        "Authorization": "Bearer {{admin_token}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "userIds": [1, 2, 3],
+        "title": "تحديث النظام",
+        "message": "سيتم إجراء صيانة على النظام"
+      },
+      "expected_response": {
+        "sentCount": 3,
+        "message": "Notifications sent successfully"
+      },
+      "notes": "إرسال لمجموعة مستخدمين"
+    }
+  }
+}

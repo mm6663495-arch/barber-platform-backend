@@ -1,0 +1,113 @@
+{
+  "backupId": "0cf049bc-b127-4f59-825d-df22cfc02aa4",
+  "userId": 68,
+  "type": "FULL",
+  "description": "Manual backup",
+  "createdAt": "2025-11-15T15:33:39.762Z",
+  "version": "1.0",
+  "data": {
+    "user": {
+      "id": 68,
+      "email": "zzzz@gmail.com",
+      "role": "SALON_OWNER",
+      "notificationSettings": {},
+      "twoFactorEnabled": false
+    },
+    "profile": {
+      "id": 38,
+      "userId": 68,
+      "fullName": "hhff",
+      "phone": "09595101896",
+      "subscriptionType": "MONTHLY",
+      "subscriptionStatus": "ACTIVE",
+      "subscriptionStartDate": "2025-11-15T15:27:08.454Z",
+      "subscriptionEndDate": "2025-12-15T15:27:08.454Z",
+      "createdAt": "2025-11-15T15:27:08.456Z",
+      "updatedAt": "2025-11-15T15:27:08.456Z",
+      "salons": [
+        {
+          "id": 36,
+          "ownerId": 38,
+          "name": "fufihd",
+          "logo": "http://192.168.119.47:3000/uploads/salons/logos/f8e02b42-1421-489e-ae1d-64f1d65f3e7b.jpg",
+          "description": "redundancies redundant not the same only I that used a rest other to the in able best of not just having rest other just the",
+          "address": "stsdy",
+          "latitude": 24.7136,
+          "longitude": 46.6753,
+          "workingHours": {
+            "sunday": "09:00-22:00",
+            "monday": "09:00-22:00",
+            "tuesday": "09:00-22:00",
+            "wednesday": "09:00-22:00",
+            "thursday": "09:00-22:00",
+            "friday": "14:00-22:00",
+            "saturday": "09:00-22:00"
+          },
+          "images": [
+            "http://192.168.119.47:3000/uploads/salons/images/dfbe8947-8fdc-4376-8b11-90fd01640b45.jpg",
+            "http://192.168.119.47:3000/uploads/salons/images/8c9e3037-0d37-44c3-8072-f4c7e765d55c.jpg",
+            "http://192.168.119.47:3000/uploads/salons/images/ff8da8fb-d047-4030-b30e-5b7e362dab1a.jpg",
+            "http://192.168.119.47:3000/uploads/salons/images/0d5ab543-5a26-45a0-9539-3b614717d5e0.jpg",
+            "http://192.168.119.47:3000/uploads/salons/images/1828a6ea-1800-4a22-8385-e2f9f1ae3d3e.jpg",
+            "http://192.168.119.47:3000/uploads/salons/images/3584a8c6-5d39-44d0-aeaa-77785dccd335.jpg",
+            "http://192.168.119.47:3000/uploads/salons/images/9cd09dd6-ad93-42d6-9650-3e9071f85ba9.jpg",
+            "http://192.168.119.47:3000/uploads/salons/images/4b751f3a-904b-4a1f-983a-3c7c31ea3c6d.jpg"
+          ],
+          "rating": 0,
+          "totalReviews": 0,
+          "isActive": true,
+          "isApproved": true,
+          "createdAt": "2025-11-15T15:27:46.985Z",
+          "updatedAt": "2025-11-15T15:27:46.985Z",
+          "packages": [],
+          "visits": [],
+          "reviews": []
+        }
+      ]
+    },
+    "salons": [
+      {
+        "id": 36,
+        "ownerId": 38,
+        "name": "fufihd",
+        "logo": "http://192.168.119.47:3000/uploads/salons/logos/f8e02b42-1421-489e-ae1d-64f1d65f3e7b.jpg",
+        "description": "redundancies redundant not the same only I that used a rest other to the in able best of not just having rest other just the",
+        "address": "stsdy",
+        "latitude": 24.7136,
+        "longitude": 46.6753,
+        "workingHours": {
+          "sunday": "09:00-22:00",
+          "monday": "09:00-22:00",
+          "tuesday": "09:00-22:00",
+          "wednesday": "09:00-22:00",
+          "thursday": "09:00-22:00",
+          "friday": "14:00-22:00",
+          "saturday": "09:00-22:00"
+        },
+        "images": [
+          "http://192.168.119.47:3000/uploads/salons/images/dfbe8947-8fdc-4376-8b11-90fd01640b45.jpg",
+          "http://192.168.119.47:3000/uploads/salons/images/8c9e3037-0d37-44c3-8072-f4c7e765d55c.jpg",
+          "http://192.168.119.47:3000/uploads/salons/images/ff8da8fb-d047-4030-b30e-5b7e362dab1a.jpg",
+          "http://192.168.119.47:3000/uploads/salons/images/0d5ab543-5a26-45a0-9539-3b614717d5e0.jpg",
+          "http://192.168.119.47:3000/uploads/salons/images/1828a6ea-1800-4a22-8385-e2f9f1ae3d3e.jpg",
+          "http://192.168.119.47:3000/uploads/salons/images/3584a8c6-5d39-44d0-aeaa-77785dccd335.jpg",
+          "http://192.168.119.47:3000/uploads/salons/images/9cd09dd6-ad93-42d6-9650-3e9071f85ba9.jpg",
+          "http://192.168.119.47:3000/uploads/salons/images/4b751f3a-904b-4a1f-983a-3c7c31ea3c6d.jpg"
+        ],
+        "rating": 0,
+        "totalReviews": 0,
+        "isActive": true,
+        "isApproved": true,
+        "createdAt": "2025-11-15T15:27:46.985Z",
+        "updatedAt": "2025-11-15T15:27:46.985Z",
+        "packages": [],
+        "visits": [],
+        "reviews": []
+      }
+    ],
+    "packages": [],
+    "visits": [],
+    "reviews": [],
+    "subscriptions": []
+  }
+}
