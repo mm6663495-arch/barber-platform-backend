@@ -20,7 +20,7 @@ jobs:
   deploy-staging:
     name: Deploy to Staging
     runs-on: ubuntu-latest
-    if: (github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging') && secrets.STAGING_DATABASE_URL != ''
+    if: false  # تعطيل مؤقتاً حتى يتم إعداد بيئة Staging
     environment:
       name: staging
       url: https://staging-api.barber-platform.com
