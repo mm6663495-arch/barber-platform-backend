@@ -80,7 +80,8 @@
     "uuid": "^10.0.0",
     "winston": "^3.18.3",
     "winston-daily-rotate-file": "^5.0.0",
-    "prisma": "^6.16.3"
+    "prisma": "^6.16.3",
+    "@nestjs/cli": "^11.0.0"
   },
   "prisma": {
     "seed": "npx ts-node prisma/seed.ts"
@@ -88,7 +89,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
-    "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.1.6",
     "@types/bcryptjs": "^2.4.6",
