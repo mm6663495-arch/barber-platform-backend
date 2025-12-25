@@ -2,6 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { existsSync, unlinkSync, statSync } from 'fs';
 import { join } from 'path';
 import sharp from 'sharp';
+import { Express } from 'express';
 
 /**
  * Upload Service - معالجة وإدارة الملفات المرفوعة

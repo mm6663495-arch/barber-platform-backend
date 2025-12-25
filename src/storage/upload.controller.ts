@@ -12,6 +12,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 import { ApiTags, ApiConsumes, ApiBody, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { StorageService, UploadFileOptions } from './storage.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';

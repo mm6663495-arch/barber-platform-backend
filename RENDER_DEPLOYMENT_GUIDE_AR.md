@@ -1,3 +1,4 @@
+
 # 🚀 دليل شامل لنشر الباك اند على Render للمبتدئين
 
 ## 📋 نظرة عامة
@@ -138,7 +139,7 @@ datasource db {
 - **Branch**: `main` (أو `master`)
 - **Root Directory**: اتركه فارغاً (أو `barber-platform-backend` إذا كان المشروع في مجلد فرعي)
 - **Runtime**: `Node`
-- **Build Command**: `npm install && npx prisma generate && npm run build`
+- **Build Command**: `npm install --legacy-peer-deps && npx prisma generate && npm run build`
 - **Start Command**: `npx prisma migrate deploy && npm run start:prod`
 
 #### Advanced Settings:

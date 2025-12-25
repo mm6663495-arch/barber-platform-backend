@@ -23,7 +23,7 @@ git push -u origin main
 2. اختر مستودع GitHub الخاص بك
 3. املأ:
    - **Name**: `barber-platform-backend`
-   - **Build Command**: `npm install && npx prisma generate && npm run build`
+   - **Build Command**: `npm install --legacy-peer-deps && npx prisma generate && npm run build`
    - **Start Command**: `npx prisma migrate deploy && npm run start:prod`
 4. أضف Environment Variables:
    ```
