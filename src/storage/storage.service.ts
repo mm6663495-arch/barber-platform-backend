@@ -4,7 +4,7 @@ import { S3Service, UploadResult } from './s3.service';
 import { LocalStorageService } from './local-storage.service';
 import { ImageService } from './image.service';
 import * as path from 'path';
-import { Express } from 'express';
+import type { Express } from 'express';
 
 export interface UploadFileOptions {
   folder?: string;
