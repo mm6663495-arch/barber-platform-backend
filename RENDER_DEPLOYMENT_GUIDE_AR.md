@@ -137,10 +137,12 @@ datasource db {
 - **Name**: `barber-platform-backend`
 - **Region**: اختر الأقرب إليك
 - **Branch**: `main` (أو `master`)
-- **Root Directory**: اتركه فارغاً (أو `barber-platform-backend` إذا كان المشروع في مجلد فرعي)
+- **Root Directory**: ⚠️ **يجب أن يكون فارغاً تماماً** (لا تضع أي قيمة هنا!)
 - **Runtime**: `Node`
 - **Build Command**: `npm install --legacy-peer-deps && npx prisma generate && npm run build`
-- **Start Command**: `npx prisma migrate deploy && npm run start:prod`
+  
+  **⚠️ مهم:** استخدم `npm run build` وليس `npx nest build` مباشرة!
+- **Start Command**: `npx prisma db push && npm run start:prod`
 
 #### Advanced Settings:
 - **Environment**: `Node`
